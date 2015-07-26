@@ -3,7 +3,7 @@ Generates elementary cellular automata.
 
 See http://mathworld.wolfram.com/ElementaryCellularAutomaton.html for a list of rules.
 
-Some example output:
+Some example output (zoomed in):
 
 ![Alt text](https://pbs.twimg.com/media/CK0E2t6UwAADfPH.png)
 
