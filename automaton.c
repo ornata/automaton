@@ -23,9 +23,8 @@ void print_grid(uint8_t grid[NROWS][NCOLS], FILE* ofp)
     }
 }
 
-/* Calls eval_middle to determine whether or not the current cell is
-* black (1) or white (0).
-*/
+/* Evaluates the colour of each cell in the grid based off of the
+* values stored in rule. */
 void build_automata(uint8_t grid[NROWS][NCOLS], uint8_t rule)
 {
     int i, j;
@@ -39,10 +38,6 @@ void build_automata(uint8_t grid[NROWS][NCOLS], uint8_t rule)
     }
 }
 
-/* Reads in an integer representing a rule for cellular automaton generation.
-* Sets the starting point for the automaton to be row 0's NCOLS/2-th element.
-* Calls build_automata and outputs an image automaton.pbm after it completes.
-* To increase automata size, increase NROWS or NCOLS. */
 int main(int argc, char* argv[])
 {
     uint8_t grid[NROWS][NCOLS];
@@ -50,6 +45,7 @@ int main(int argc, char* argv[])
     uint8_t rule;
     FILE* ofp;
 
+    // if you want to misuse this, fine, don't get a pretty picture
     fprintf(stdout, "Input an integer between 0 and 255.\n");
     scanf("%2" SCNu8, &rule);
 
@@ -69,6 +65,5 @@ int main(int argc, char* argv[])
     print_grid(grid, ofp);
     fclose(ofp);
     fprintf(stdout, "Output to 'automaton.pbm.'\n");
-
     return 0;
 }
