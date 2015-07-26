@@ -8,7 +8,7 @@
 #define NCOLS 201
 
 /* Prints out the cellular automaton */
-void print_grid(int grid[NROWS][NCOLS], FILE* ofp)
+void print_grid(int8_t grid[NROWS][NCOLS], FILE* ofp)
 {
     int i, j;
     for (i = 0; i < NROWS; i++)
@@ -26,37 +26,20 @@ void print_grid(int grid[NROWS][NCOLS], FILE* ofp)
 *     1. The binary value that left, centre and right form
 *     2. Whether or bot the corresponding bit in rule is set or not.
 */
-int eval_middle(int grid[NCOLS], int index, int8_t rule)
+int eval_middle(int8_t grid[NCOLS], int index, int8_t rule)
 {
-    int left, right, centre;
+    int8_t left, right, centre, nbrs;
     left = grid[index - 1];
     right = grid[index + 1];
     centre = grid[index];
-
-    if (left == 1 && centre == 1 && right == 1)
-        return (rule >> 7) & 0x1; 
-    else if (left == 1 && centre == 1 && right == 0)
-        return (rule >> 6) & 0x1;
-    else if (left == 1 && centre == 0 && right == 1)
-        return (rule >> 5) & 0x1;
-    else if (left == 1 && centre == 0 && right == 0)
-        return (rule >> 4) & 0x1;
-    else if (left == 1 && centre == 0 && right == 0)
-        return (rule >> 4) & 0x1;
-    else if (left == 0 && centre == 1 && right == 1)
-        return (rule >> 3) & 0x1;
-    else if (left == 0 && centre == 1 && right == 0)
-        return (rule >> 2) & 0x1;
-    else if (left == 0 && centre == 0 && right == 1)
-        return (rule >> 1) & 0x1;
-    else
-        return rule & 0x1;
+    nbrs = (left << 2) | (centre << 1) | (right);
+    return (rule >> nbrs) & 0x1;
 }
 
 /* Calls eval_middle to determine whether or not the current cell is
 * black (1) or white (0).
 */
-void build_automata(int grid[NROWS][NCOLS], int8_t rule)
+void build_automata(int8_t grid[NROWS][NCOLS], int8_t rule)
 {
     int i, j;
     for (i = 0; i < NROWS-1; i++) {
@@ -72,7 +55,7 @@ void build_automata(int grid[NROWS][NCOLS], int8_t rule)
 * To increase automata size, increase NROWS or NCOLS. */
 int main(int argc, char* argv[])
 {
-    int grid[NROWS][NCOLS];
+    int8_t grid[NROWS][NCOLS];
     int i, j;
     uint8_t rule;
     FILE* ofp;
@@ -95,12 +78,12 @@ int main(int argc, char* argv[])
         fprintf(stderr, "Could not create image.\n");
         exit(-1);
     }
-
+    
     fprintf(ofp, "P1\n");
     fprintf(ofp, "%d %d\n", NROWS-1, NCOLS-2);
-
     print_grid(grid, ofp);
     fclose(ofp);
+    fprintf(stdout, "Output to 'automaton.pbm.'\n");
 
     return 0;
 }
