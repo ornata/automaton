@@ -1,4 +1,4 @@
-/* automata.c
+/* automaton.c
 * Generates a cellular automaton with NROWS rows and NCOLS cols given a rule. */
 
 #include <stdio.h>
@@ -29,7 +29,6 @@ void build_automata(uint8_t grid[NROWS][NCOLS], uint8_t rule)
 {
     int i, j;
     int8_t nbrs;
-
     for (i = 0; i < NROWS-1; i++) {
         for (j = 1; j < NCOLS-1; j++) {
             nbrs = (grid[i][j - 1] << 2) | (grid[i][j] << 1) | (grid[i][j + 1]);
@@ -45,23 +44,21 @@ int main(int argc, char* argv[])
     uint8_t rule;
     FILE* ofp;
 
-    // if you want to misuse this, fine, don't get a pretty picture
     fprintf(stdout, "Input an integer between 0 and 255.\n");
     scanf("%2" SCNu8, &rule);
 
-    for (i = 0; i < NROWS; i++)
-        for (j = 0; j < NCOLS; j++)
-            grid[i][j] = 0;
+    for (i = 0; i < NCOLS; i++)
+        grid[0][i] = 0;
 
     grid[0][NCOLS/2] = 1; // initial grid configuration
-    build_automata(grid, rule);
-    ofp = fopen("automaton.pbm", "w");
 
+    build_automata(grid, rule);
+
+    ofp = fopen("automaton.pbm", "w");
     if (ofp == NULL) {
         fprintf(stderr, "Could not create image.\n");
         exit(-1);
     }
-    
     print_grid(grid, ofp);
     fclose(ofp);
     fprintf(stdout, "Output to 'automaton.pbm.'\n");
